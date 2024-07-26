@@ -1,3 +1,2 @@
 # surf_flutter_summer_school_24
-
-Шаблонный репозиторий для Surf Flutter Summer School '24
+[Видеообзор](https://drive.google.com/file/d/1VxFwRstU3MSGqNLQCsIL7a75_uq4C6bS/view?usp=sharing)
