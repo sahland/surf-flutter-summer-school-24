@@ -5,6 +5,5 @@ class TapeRoutes {
   static final routes = AutoRoute(page: TapeWrapperRoute.page, children: [
     AutoRoute(page: TapeRoute.page, initial: true),
     AutoRoute(page: ImageViewRoute.page),
-    AutoRoute(page: CameraViewRoute.page)
   ]);
 }
