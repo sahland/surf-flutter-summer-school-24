@@ -14,13 +14,13 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
       required this.textField,
       required this.textFieldHelper});
 
-  AppColorScheme.light()
+  const AppColorScheme.light()
       : primary = LightColorPalette.black,
         background = LightColorPalette.white,
         textField = LightColorPalette.black,
         textFieldHelper = LightColorPalette.textGrey;
 
-  AppColorScheme.dark()
+  const AppColorScheme.dark()
       : primary = DarkColorPalette.white,
         background = DarkColorPalette.lightDark,
         textField = DarkColorPalette.white,

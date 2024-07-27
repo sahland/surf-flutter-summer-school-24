@@ -9,6 +9,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:surf_flutter_summer_school_24/features/tape/bloc/tape_bloc.dart';
 import 'package:surf_flutter_summer_school_24/features/tape/widgets/widgets.dart';
 
+import '../../../common/common.dart';
+
 @RoutePage()
 class TapeScreen extends StatefulWidget {
   const TapeScreen({super.key});
@@ -26,52 +28,68 @@ class _TapeScreenState extends State<TapeScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: RefreshIndicator(
-        color: Theme.of(context).colorScheme.primary,
-        backgroundColor: Theme.of(context).colorScheme.background,
-        onRefresh: () async {
-          await _refreshScreen(context);
-        },
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              pinned: true,
-              expandedHeight: 50,
-              centerTitle: true,
-              title: Image.asset(
-                './assets/images/logo.png',
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              leading: IconButton(
-                onPressed: _onClickCamera,
-                icon: SvgPicture.asset(
-                  './assets/icons/camera.svg',
-                  width: 32,
-                  height: 32,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              actions: [
-                IconButton(
-                  onPressed: _showBottomSheet,
-                  icon: SvgPicture.asset(
-                    './assets/icons/points.svg',
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: BlocBuilder<TapeBloc, TapeState>(
+      builder: (context, state) {
+        if (state is TapeLoadingState) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is TapeLoadedState) {
+          return RefreshIndicator(
+            color: Theme.of(context).colorScheme.primary,
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            onRefresh: () async {
+              await _refreshScreen(context);
+            },
+            child: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  pinned: true,
+                  expandedHeight: 50,
+                  centerTitle: true,
+                  title: Image.asset(
+                    './assets/images/logo.png',
                     color: Theme.of(context).colorScheme.primary,
                   ),
+                  leading: IconButton(
+                    onPressed: _onClickCamera,
+                    icon: SvgPicture.asset(
+                      './assets/icons/camera.svg',
+                      width: 32,
+                      height: 32,
+                      // ignore: deprecated_member_use
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  actions: [
+                    IconButton(
+                      onPressed: _showBottomSheet,
+                      icon: SvgPicture.asset(
+                        './assets/icons/points.svg',
+                        // ignore: deprecated_member_use
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                ),
+                const SliverPadding(
+                  padding: EdgeInsets.all(8.0),
+                  sliver: ImageBox(),
                 ),
               ],
             ),
-            const SliverPadding(
-              padding: EdgeInsets.all(8.0),
-              sliver: ImageBox(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+          );
+        } else if (state is TapeNoConnectionState) {
+          return NoConnecting(onRetry: () => _refreshScreen(context));
+        } else if (state is TapeFailureState) {
+          return NoConnecting(onRetry: () => _refreshScreen(context));
+        } else {
+          return NoConnecting(onRetry: () => _refreshScreen(context));
+        }
+      },
+    ),
+  );
+}
 
   void _showBottomSheet() {
     showModalBottomSheet(
@@ -100,12 +118,14 @@ class _TapeScreenState extends State<TapeScreen> {
 
   Future<void> _getImageFromGallery(BuildContext context) async {
     final picker = ImagePicker();
-    final imageFromGallery = await picker.pickImage(source: ImageSource.gallery);
+    final imageFromGallery =
+        await picker.pickImage(source: ImageSource.gallery);
     if (imageFromGallery != null) {
       final file = File(imageFromGallery.path);
       final completer = Completer<void>();
       final fileName = imageFromGallery.name;
 
+      // ignore: use_build_context_synchronously
       BlocProvider.of<TapeBloc>(context, listen: false).add(
         UploadImageEvent(
           path: file.path,
@@ -116,6 +136,7 @@ class _TapeScreenState extends State<TapeScreen> {
 
       await completer.future;
     }
+    // ignore: use_build_context_synchronously
     Navigator.of(context).pop();
   }
 
@@ -135,6 +156,7 @@ class _TapeScreenState extends State<TapeScreen> {
       final completer = Completer<void>();
       final fileName = imageFromCamera.name;
 
+      // ignore: use_build_context_synchronously
       BlocProvider.of<TapeBloc>(context, listen: false).add(
         UploadImageEvent(
           path: file.path,
@@ -145,6 +167,7 @@ class _TapeScreenState extends State<TapeScreen> {
 
       await completer.future;
     }
+    // ignore: use_build_context_synchronously
     Navigator.of(context).pop();
   }
 
@@ -155,4 +178,3 @@ class _TapeScreenState extends State<TapeScreen> {
     await completer.future;
   }
 }
-

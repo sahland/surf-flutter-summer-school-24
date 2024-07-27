@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -22,25 +21,33 @@ class ImageViewBloc extends Bloc<ImageViewEvent, ImageViewState> {
 
   Future<void> _onItems(
       ImageViewItemsEvent event, Emitter<ImageViewState> emit) async {
+    Timer? timer;
     try {
       emit(ImageViewLoadingState());
+
+      timer = Timer(const Duration(seconds: 10), () {
+        emit(ImageViewNoConnectionState());
+      });
+
       final items = await imageControllerApiClient.getItems();
-      emit(ImageViewLoadedState(items: items));
-      log('ImageViewBloc log: $items');
+
+      if (timer.isActive) {
+        timer.cancel();
+        emit(ImageViewLoadedState(items: items));
+      }
     } catch (e) {
       emit(ImageViewFailureState(e));
-      log('ImageViewBloc exception log: $e');
     } finally {
       event.completer?.complete();
     }
   }
 
-  void _onPageChanged(ImageViewPageChangedEvent event, Emitter<ImageViewState> emit) {
+  void _onPageChanged(
+      ImageViewPageChangedEvent event, Emitter<ImageViewState> emit) {
     if (state is ImageViewLoadedState) {
       final loadedState = state as ImageViewLoadedState;
-      emit(ImageViewLoadedState(items: loadedState.items, activePage: event.pageIndex));
+      emit(ImageViewLoadedState(
+          items: loadedState.items, activePage: event.pageIndex));
     }
   }
 }
-
-

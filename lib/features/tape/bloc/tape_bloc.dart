@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
@@ -22,15 +21,24 @@ class TapeBloc extends Bloc<TapeEvent, TapeState> {
   }
 
   Future<void> _onInit(TapeInit event, Emitter<TapeState> emit) async {
+    Timer? timer;
     try {
       emit(TapeLoadingState());
 
+      timer = Timer(const Duration(seconds: 10), () {
+        emit(TapeNoConnectionState());
+      });
+
       final uploadFile = await imageControllerApiClient.getUploadFile('name');
       final items = await imageControllerApiClient.getItems();
-      emit(TapeLoadedState(
+
+      if (timer.isActive) {
+        timer.cancel();
+        emit(TapeLoadedState(
           urlToAddImage: uploadFile,
           items: items,
-      ));
+        ));
+      }
     } catch (e) {
       emit(TapeFailureState(e));
     } finally {
@@ -38,11 +46,11 @@ class TapeBloc extends Bloc<TapeEvent, TapeState> {
     }
   }
 
-  Future<void> _onUrlImageUpload(UploadImageEvent event, Emitter<TapeState> emit) async {
+  Future<void> _onUrlImageUpload(
+    UploadImageEvent event, Emitter<TapeState> emit) async {
   try {
     emit(TapeLoadingState());
 
-    // Используем имя файла из события
     final upload = await imageControllerApiClient.getUploadFile(event.fileName);
     final dio = Dio();
     final formData = FormData.fromMap({
@@ -52,8 +60,8 @@ class TapeBloc extends Bloc<TapeEvent, TapeState> {
     final items = await imageControllerApiClient.getItems();
 
     emit(TapeLoadedState(
-        urlToAddImage: upload,
-        items: items,
+      urlToAddImage: upload,
+      items: items,
     ));
   } catch (e) {
     emit(TapeFailureState(e));
@@ -62,16 +70,24 @@ class TapeBloc extends Bloc<TapeEvent, TapeState> {
   }
 }
 
-
   Future<void> _onItems(ItemsEvent event, Emitter<TapeState> emit) async {
+    Timer? timer;
     try {
       emit(TapeLoadingState());
 
+      timer = Timer(const Duration(seconds: 10), () {
+        emit(TapeNoConnectionState());
+      });
+
       final items = await imageControllerApiClient.getItems();
-      emit(TapeLoadedState(
+
+      if (timer.isActive) {
+        timer.cancel();
+        emit(TapeLoadedState(
           urlToAddImage: (state as TapeLoadedState).urlToAddImage,
           items: items,
-      ));
+        ));
+      }
     } catch (e) {
       emit(TapeFailureState(e));
     } finally {

@@ -59,7 +59,7 @@ class _ImageControllerApiClient implements ImageControllerApiClient {
     )
             .compose(
               _dio.options,
-              'v1/disk/resources/files',
+              'v1/disk/resources/files?limit=400',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -70,38 +70,6 @@ class _ImageControllerApiClient implements ImageControllerApiClient {
             ))));
     final _value = ItemsModel.fromJson(_result.data!);
     return _value;
-  }
-
-  @override
-  Future<void> uploadImage(File image) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = FormData();
-    _data.files.add(MapEntry(
-      'file',
-      MultipartFile.fromFileSync(
-        image.path,
-        filename: image.path.split(Platform.pathSeparator).last,
-      ),
-    ));
-    await _dio.fetch<void>(_setStreamType<void>(Options(
-      method: 'POST',
-      headers: _headers,
-      extra: _extra,
-      contentType: 'multipart/form-data',
-    )
-        .compose(
-          _dio.options,
-          'v1/disk/resources/upload',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        ))));
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

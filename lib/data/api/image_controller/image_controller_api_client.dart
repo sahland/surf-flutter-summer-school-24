@@ -25,7 +25,6 @@ abstract class ImageControllerApiClient {
   @GET('v1/disk/resources/upload')
   Future<ImageModel> getUploadFile(@Query('path') String path);
 
-  @GET('v1/disk/resources/files')
+  @GET('v1/disk/resources/files?limit=400')
   Future<ItemsModel> getItems();
-
 }

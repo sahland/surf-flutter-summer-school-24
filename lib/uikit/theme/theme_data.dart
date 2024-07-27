@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:surf_flutter_summer_school_24/uikit/uikit.dart';
 
 abstract class AppThemeData {
-  static final _lightColorScheme = AppColorScheme.light();
-  static final _darkColorScheme = AppColorScheme.dark();
+  static const _lightColorScheme = AppColorScheme.light();
+  static const _darkColorScheme = AppColorScheme.dark();
 
   static final lightThem = ThemeData(
-    extensions: [_lightColorScheme],
+    extensions: const [_lightColorScheme],
     brightness: Brightness.light,
     colorScheme: ColorScheme.light(
       brightness: Brightness.light,
@@ -32,12 +32,12 @@ abstract class AppThemeData {
   );
 
   static final darkTheme = ThemeData(
-      extensions: [_darkColorScheme],
+      extensions: const [_darkColorScheme],
       brightness: Brightness.dark,
       colorScheme: ColorScheme.dark(
         brightness: Brightness.dark,
         primary: _darkColorScheme.primary,
-        background: _darkColorScheme.background,
+        surface: _darkColorScheme.background,
       ),
       scaffoldBackgroundColor: _darkColorScheme.background,
       appBarTheme: AppBarTheme(backgroundColor: _darkColorScheme.background),

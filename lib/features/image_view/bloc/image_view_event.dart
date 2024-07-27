@@ -24,4 +24,3 @@ final class ImageViewPageChangedEvent extends ImageViewEvent {
   @override
   List<Object?> get props => [pageIndex];
 }
-

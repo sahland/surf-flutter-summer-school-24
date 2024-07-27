@@ -44,7 +44,8 @@ class _ScrollImageState extends State<ScrollImage> {
                     onPageChanged: (page) {
                       setState(() {
                         activePage = page;
-                        BlocProvider.of<ImageViewBloc>(context).add(ImageViewPageChangedEvent(page));
+                        BlocProvider.of<ImageViewBloc>(context)
+                            .add(ImageViewPageChangedEvent(page));
                       });
                     },
                     itemBuilder: (context, pagePosition) {
@@ -65,7 +66,8 @@ class _ScrollImageState extends State<ScrollImage> {
     );
   }
 
-  AnimatedContainer slider(List<ItemModel> items, int pagePosition, bool active) {
+  AnimatedContainer slider(
+      List<ItemModel> items, int pagePosition, bool active) {
     double margin = active ? 6 : 25;
 
     return AnimatedContainer(
@@ -76,7 +78,8 @@ class _ScrollImageState extends State<ScrollImage> {
         borderRadius: BorderRadius.circular(30),
         child: CachedNetworkImage(
           imageUrl: items[pagePosition].file,
-          placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+          placeholder: (context, url) =>
+              const Center(child: CircularProgressIndicator()),
           errorWidget: (context, url, error) => const Icon(Icons.error),
           fit: BoxFit.cover,
         ),

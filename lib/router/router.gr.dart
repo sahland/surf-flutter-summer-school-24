@@ -15,12 +15,6 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
-    CameraViewRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const CameraViewScreen(),
-      );
-    },
     HomeRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -46,20 +40,6 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
   };
-}
-
-/// generated route for
-/// [CameraViewScreen]
-class CameraViewRoute extends PageRouteInfo<void> {
-  const CameraViewRoute({List<PageRouteInfo>? children})
-      : super(
-          CameraViewRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'CameraViewRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
