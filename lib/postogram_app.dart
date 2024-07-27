@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:provider/provider.dart';
 import 'package:surf_flutter_summer_school_24/data/api/api.dart';
 import 'package:surf_flutter_summer_school_24/features/features.dart';
 import 'package:surf_flutter_summer_school_24/router/router.dart';
