@@ -42,7 +42,7 @@ class _ImageBoxState extends State<ImageBox> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: FadeInImage.assetNetwork(
-                        placeholder: './assets/images/placeholder.png', 
+                        placeholder: './assets/images/placeholder.png',
                         image: items[index].file,
                         fit: BoxFit.cover,
                         fadeInDuration: const Duration(milliseconds: 300),

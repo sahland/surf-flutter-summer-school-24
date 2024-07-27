@@ -7,6 +7,8 @@ import 'package:intl/intl.dart';
 import 'package:surf_flutter_summer_school_24/features/features.dart';
 import 'package:surf_flutter_summer_school_24/features/image_view/widgets/scroll_Image.dart';
 
+import '../../../common/common.dart';
+
 @RoutePage()
 class ImageViewScreen extends StatefulWidget {
   const ImageViewScreen({super.key});
@@ -25,20 +27,23 @@ class _ImageViewScreenState extends State<ImageViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
-        color: Theme.of(context).colorScheme.primary,
-        backgroundColor: Theme.of(context).colorScheme.background,
-        onRefresh: () async {
-          await _refreshScreen(context);
-        },
-        child: CustomScrollView(
-          slivers: [
-            BlocBuilder<ImageViewBloc, ImageViewState>(
-              builder: (context, state) {
-                if (state is ImageViewLoadedState) {
-                  final items = state.items.items;
-                  final currentImage = items.isNotEmpty ? items[state.activePage] : null;
-                  return SliverAppBar(
+      body: BlocBuilder<ImageViewBloc, ImageViewState>(
+        builder: (context, state) {
+          if (state is ImageViewLoadingState) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is ImageViewLoadedState) {
+            final items = state.items.items;
+            final currentImage =
+                items.isNotEmpty ? items[state.activePage] : null;
+            return RefreshIndicator(
+              color: Theme.of(context).colorScheme.primary,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              onRefresh: () async {
+                await _refreshScreen(context);
+              },
+              child: CustomScrollView(
+                slivers: [
+                  SliverAppBar(
                     pinned: true,
                     expandedHeight: 50,
                     surfaceTintColor: Colors.transparent,
@@ -52,18 +57,22 @@ class _ImageViewScreenState extends State<ImageViewScreen> {
                       ),
                     ),
                     actions: [
-                      imageViewAction((state.activePage + 1).toString(), items.length.toString()),
+                      imageViewAction((state.activePage + 1).toString(),
+                          items.length.toString()),
                     ],
-                  );
-                }
-                return const SliverAppBar();
-              },
-            ),
-            const SliverToBoxAdapter(
-              child: ScrollImage(),
-            ),
-          ],
-        ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: ScrollImage(),
+                  ),
+                ],
+              ),
+            );
+          } else if (state is ImageViewNoConnectionState) {
+            return NoConnecting(onRetry: () => _refreshScreen(context));
+          } else {
+            return NoConnecting(onRetry: () => _refreshScreen(context));
+          }
+        },
       ),
     );
   }

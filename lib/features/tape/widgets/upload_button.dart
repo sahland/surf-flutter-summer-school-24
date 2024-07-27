@@ -1,20 +1,13 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
-
-import '../bloc/bloc.dart';
 
 class UploadButton extends StatelessWidget {
   final VoidCallback onClickGallery;
   final VoidCallback onClickCamera;
 
   const UploadButton({
-    super.key, 
-    required this.onClickGallery, 
+    super.key,
+    required this.onClickGallery,
     required this.onClickCamera,
   });
 
@@ -25,7 +18,8 @@ class UploadButton extends StatelessWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
           shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0))),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(0))),
       onPressed: () {
         showDialog(
           context: context,
@@ -72,7 +66,4 @@ class UploadButton extends StatelessWidget {
       ),
     );
   }
-
 }
-
-

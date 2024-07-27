@@ -21,6 +21,8 @@ final class TapeLoadedState extends TapeState {
   List<Object> get props => super.props..addAll([urlToAddImage, items]);
 }
 
+class TapeNoConnectionState extends TapeState {}
+
 final class TapeFailureState extends TapeState {
   const TapeFailureState(this.error);
 

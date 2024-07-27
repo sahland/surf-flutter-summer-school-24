@@ -12,10 +12,7 @@ final class ImageViewInitialState extends ImageViewState {}
 final class ImageViewLoadingState extends ImageViewState {}
 
 final class ImageViewLoadedState extends ImageViewState {
-  const ImageViewLoadedState({
-    required this.items, 
-    this.activePage = 0
-  });
+  const ImageViewLoadedState({required this.items, this.activePage = 0});
 
   final ItemsModel items;
   final int activePage;
@@ -24,6 +21,7 @@ final class ImageViewLoadedState extends ImageViewState {
   List<Object> get props => super.props..addAll([items, activePage]);
 }
 
+class ImageViewNoConnectionState extends ImageViewState {}
 
 final class ImageViewFailureState extends ImageViewState {
   const ImageViewFailureState(this.error);

@@ -9,8 +9,9 @@ sealed class TapeEvent extends Equatable {
 }
 
 final class UploadImageEvent extends TapeEvent {
-  const UploadImageEvent({required this.path, required this.fileName, this.completer});
-  
+  const UploadImageEvent(
+      {required this.path, required this.fileName, this.completer});
+
   final String path;
   final String fileName;
   final Completer? completer;
@@ -18,7 +19,6 @@ final class UploadImageEvent extends TapeEvent {
   @override
   List<Object?> get props => [path, fileName, completer];
 }
-
 
 final class ItemsEvent extends TapeEvent {
   const ItemsEvent({this.completer});
