@@ -47,28 +47,30 @@ class TapeBloc extends Bloc<TapeEvent, TapeState> {
   }
 
   Future<void> _onUrlImageUpload(
-    UploadImageEvent event, Emitter<TapeState> emit) async {
-  try {
-    emit(TapeLoadingState());
+      UploadImageEvent event, Emitter<TapeState> emit) async {
+    try {
+      emit(TapeLoadingState());
 
-    final upload = await imageControllerApiClient.getUploadFile(event.fileName);
-    final dio = Dio();
-    final formData = FormData.fromMap({
-      'file': await MultipartFile.fromFile(event.path, filename: event.fileName),
-    });
-    await dio.put(upload.href, data: formData);
-    final items = await imageControllerApiClient.getItems();
+      final upload =
+          await imageControllerApiClient.getUploadFile(event.fileName);
+      final dio = Dio();
+      final formData = FormData.fromMap({
+        'file':
+            await MultipartFile.fromFile(event.path, filename: event.fileName),
+      });
+      await dio.put(upload.href, data: formData);
+      final items = await imageControllerApiClient.getItems();
 
-    emit(TapeLoadedState(
-      urlToAddImage: upload,
-      items: items,
-    ));
-  } catch (e) {
-    emit(TapeFailureState(e));
-  } finally {
-    event.completer?.complete();
+      emit(TapeLoadedState(
+        urlToAddImage: upload,
+        items: items,
+      ));
+    } catch (e) {
+      emit(TapeFailureState(e));
+    } finally {
+      event.completer?.complete();
+    }
   }
-}
 
   Future<void> _onItems(ItemsEvent event, Emitter<TapeState> emit) async {
     Timer? timer;

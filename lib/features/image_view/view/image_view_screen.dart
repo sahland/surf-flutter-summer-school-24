@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:surf_flutter_summer_school_24/features/features.dart';
-import 'package:surf_flutter_summer_school_24/features/image_view/widgets/scroll_Image.dart';
-
-import '../../../common/common.dart';
+import 'package:surf_flutter_summer_school_24/features/image_view/widgets/widgets.dart';
+import 'package:surf_flutter_summer_school_24/uikit/uikit.dart';
 
 @RoutePage()
 class ImageViewScreen extends StatefulWidget {
@@ -26,11 +25,16 @@ class _ImageViewScreenState extends State<ImageViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    const expandedHeight = 50.0;
+    const fontSize = 20.0;
+
     return Scaffold(
       body: BlocBuilder<ImageViewBloc, ImageViewState>(
         builder: (context, state) {
           if (state is ImageViewLoadingState) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           } else if (state is ImageViewLoadedState) {
             final items = state.items.items;
             final currentImage =
@@ -45,20 +49,19 @@ class _ImageViewScreenState extends State<ImageViewScreen> {
                 slivers: [
                   SliverAppBar(
                     pinned: true,
-                    expandedHeight: 50,
+                    expandedHeight: expandedHeight,
                     surfaceTintColor: Colors.transparent,
                     centerTitle: true,
                     title: Text(
                       _dateProcessing(currentImage?.created ?? ''),
                       style: const TextStyle(
-                        fontSize: 20,
-                        fontFamily: 'Roboto',
+                        fontSize: fontSize,
                         fontWeight: FontWeight.w300,
                       ),
                     ),
                     actions: [
                       imageViewAction((state.activePage + 1).toString(),
-                          items.length.toString()),
+                          items.length.toString(), fontSize),
                     ],
                   ),
                   const SliverToBoxAdapter(
@@ -77,33 +80,37 @@ class _ImageViewScreenState extends State<ImageViewScreen> {
     );
   }
 
-  Row imageViewAction(String imageIndex, String allImages) {
+  Row imageViewAction(
+    String imageIndex,
+    String allImages,
+    double fontSize,
+  ) {
+    const sizedBoxWidth = 22.0;
+
     return Row(
       children: [
         Text(
           imageIndex,
-          style: const TextStyle(
-            fontSize: 20,
-            fontFamily: 'Roboto',
+          style: TextStyle(
+            fontSize: fontSize,
             fontWeight: FontWeight.w300,
           ),
         ),
         Text(
           '/$allImages',
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.grey,
-            fontSize: 20,
-            fontFamily: 'Roboto',
+            fontSize: fontSize,
             fontWeight: FontWeight.w300,
           ),
         ),
-        const SizedBox(width: 22),
+        const SizedBox(width: sizedBoxWidth),
       ],
     );
   }
 
-  String _dateProcessing(String date) {
-    final DateFormat formatter = DateFormat('yyyy.MM.dd');
+  String _dateProcessing(String date, [String dateFormat = 'yyyy.MM.dd']) {
+    final DateFormat formatter = DateFormat(dateFormat);
     final formattedDate = DateTime.parse(date);
     return formatter.format(formattedDate).toString();
   }

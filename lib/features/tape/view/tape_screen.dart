@@ -6,10 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:surf_flutter_summer_school_24/features/tape/bloc/tape_bloc.dart';
+import 'package:surf_flutter_summer_school_24/features/features.dart';
 import 'package:surf_flutter_summer_school_24/features/tape/widgets/widgets.dart';
-
-import '../../../common/common.dart';
+import 'package:surf_flutter_summer_school_24/uikit/uikit.dart';
 
 @RoutePage()
 class TapeScreen extends StatefulWidget {
@@ -28,82 +27,95 @@ class _TapeScreenState extends State<TapeScreen> {
   }
 
   @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    body: BlocBuilder<TapeBloc, TapeState>(
-      builder: (context, state) {
-        if (state is TapeLoadingState) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state is TapeLoadedState) {
-          return RefreshIndicator(
-            color: Theme.of(context).colorScheme.primary,
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            onRefresh: () async {
-              await _refreshScreen(context);
-            },
-            child: CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  pinned: true,
-                  expandedHeight: 50,
-                  centerTitle: true,
-                  title: Image.asset(
-                    './assets/images/logo.png',
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  leading: IconButton(
-                    onPressed: _onClickCamera,
-                    icon: SvgPicture.asset(
-                      './assets/icons/camera.svg',
-                      width: 32,
-                      height: 32,
-                      // ignore: deprecated_member_use
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                  actions: [
-                    IconButton(
-                      onPressed: _showBottomSheet,
+  Widget build(BuildContext context) {
+    const logoPath = './assets/images/logo.png';
+    const cameraPath = './assets/icons/camera.svg';
+    const pointsPath = './assets/icons/points.svg';
+    const cameraIconSize = 32.0;
+    const expandedHeight = 50.0;
+    const padding = 8.0;
+
+    return Scaffold(
+      body: BlocBuilder<TapeBloc, TapeState>(
+        builder: (context, state) {
+          if (state is TapeLoadingState) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is TapeLoadedState) {
+            return RefreshIndicator(
+              color: Theme.of(context).colorScheme.primary,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              onRefresh: () async {
+                await _refreshScreen(context);
+              },
+              child: CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    pinned: true,
+                    expandedHeight: expandedHeight,
+                    centerTitle: true,
+                    title: _baseIcon(logoPath, context),
+                    leading: IconButton(
+                      onPressed: _onClickCamera,
                       icon: SvgPicture.asset(
-                        './assets/icons/points.svg',
+                        cameraPath,
+                        width: cameraIconSize,
+                        height: cameraIconSize,
                         // ignore: deprecated_member_use
                         color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
-                  ],
-                ),
-                const SliverPadding(
-                  padding: EdgeInsets.all(8.0),
-                  sliver: ImageBox(),
-                ),
-              ],
-            ),
-          );
-        } else if (state is TapeNoConnectionState) {
-          return NoConnecting(onRetry: () => _refreshScreen(context));
-        } else if (state is TapeFailureState) {
-          return NoConnecting(onRetry: () => _refreshScreen(context));
-        } else {
-          return NoConnecting(onRetry: () => _refreshScreen(context));
-        }
-      },
-    ),
-  );
-}
+                    actions: [
+                      IconButton(
+                        onPressed: _showBottomSheet,
+                        icon: _baseIcon(pointsPath, context),
+                      ),
+                    ],
+                  ),
+                  const SliverPadding(
+                    padding: EdgeInsets.all(padding),
+                    sliver: ImageBox(),
+                  ),
+                ],
+              ),
+            );
+          } else if (state is TapeNoConnectionState) {
+            return NoConnecting(onRetry: () => _refreshScreen(context));
+          } else if (state is TapeFailureState) {
+            return NoConnecting(onRetry: () => _refreshScreen(context));
+          } else {
+            return NoConnecting(onRetry: () => _refreshScreen(context));
+          }
+        },
+      ),
+    );
+  }
 
-  void _showBottomSheet() {
+  Image _baseIcon(String imagePath, BuildContext context) {
+    return Image.asset(
+      imagePath,
+      color: Theme.of(context).colorScheme.primary,
+    );
+  }
+
+  void _showBottomSheet([
+    double heightFactor = 0.4,
+    double padding = 10,
+  ]) {
+    const topHeight = 15.0;
+    const lowHeight = 15.0;
+
     showModalBottomSheet(
       context: context,
       builder: (context) {
         return FractionallySizedBox(
-          heightFactor: 0.4,
+          heightFactor: heightFactor,
           child: Container(
-            padding: const EdgeInsets.all(10),
+            padding: EdgeInsets.all(padding),
             child: Column(
               children: [
-                const SizedBox(height: 15),
+                const SizedBox(height: topHeight),
                 const ThemeButton(),
-                const SizedBox(height: 10),
+                const SizedBox(height: lowHeight),
                 UploadButton(
                   onClickGallery: _onClickGallery,
                   onClickCamera: _onClickCamera,
