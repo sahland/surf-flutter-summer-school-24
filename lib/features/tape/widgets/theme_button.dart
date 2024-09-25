@@ -3,8 +3,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:surf_flutter_summer_school_24/features/features.dart';
 
 class ThemeButton extends StatefulWidget {
+  final double height;
+  final double width;
+  final double fontSize;
+
   const ThemeButton({
     super.key,
+    this.height = 50,
+    this.width = double.infinity,
+    this.fontSize = 18,
   });
 
   @override
@@ -17,11 +24,7 @@ class _ThemeButtonState extends State<ThemeButton> {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.transparent,
-        elevation: 0,
         shadowColor: Colors.transparent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(0),
-        ),
       ),
       onPressed: () {
         setState(() {
@@ -29,41 +32,66 @@ class _ThemeButtonState extends State<ThemeButton> {
         });
       },
       child: Container(
-        width: double.infinity,
-        height: 50,
+        width: widget.width,
+        height: widget.height,
         padding: EdgeInsets.zero,
-        child: Column(
+        child: _themeConfig(context),
+      ),
+    );
+  }
+
+  Column _themeConfig(
+    BuildContext context, [
+    String title = 'Тема',
+    String imagePath = './assets/icons/sun.svg',
+  ]) {
+    const sizedBoxHeight = 10.0;
+    const sizedBoxWidth = 15.0;
+
+    return Column(
+      children: [
+        const SizedBox(
+          height: sizedBoxHeight,
+        ),
+        Row(
           children: [
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                SvgPicture.asset('./assets/icons/sun.svg'),
-                const SizedBox(width: 15),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Тема',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-                  ),
+            SvgPicture.asset(imagePath),
+            const SizedBox(
+              width: sizedBoxWidth,
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: widget.fontSize,
+                  fontWeight: FontWeight.w400,
                 ),
-                const Spacer(),
-                ValueListenableBuilder<ThemeMode>(
-                  valueListenable: ThemeInherited.of(context).themeMode,
-                  builder: (context, themeMode, _) {
-                    return Text(
-                      themeMode == ThemeMode.dark ? 'Тёмная' : 'Светлая',
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    );
-                  },
-                ),
-              ],
+              ),
+            ),
+            const Spacer(),
+            ValueListenableBuilder<ThemeMode>(
+              valueListenable: ThemeInherited.of(context).themeMode,
+              builder: (context, themeMode, _) {
+                return _textTheme(themeMode);
+              },
             ),
           ],
         ),
+      ],
+    );
+  }
+
+  Text _textTheme(ThemeMode themeMode) {
+    const darkTitle = 'Темная';
+    const lightTitle = 'Свветлая';
+
+    return Text(
+      themeMode == ThemeMode.dark ? darkTitle : lightTitle,
+      style: TextStyle(
+        color: Colors.grey,
+        fontSize: widget.fontSize,
+        fontWeight: FontWeight.w400,
       ),
     );
   }
